@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './core/auth/auth.module';
 
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProfileModule } from './module/profile/profile.module';
 import { ArticleModule } from './module/article/article.module';
 import { CarierModule } from './module/carier/carier.module';
@@ -12,6 +12,7 @@ import { TagModule } from './module/tag/tag.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ChatbotModule } from './module/chatbot/chatbot.module';
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -21,15 +22,19 @@ import { ChatbotModule } from './module/chatbot/chatbot.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '', // ganti sesuai konfigurasi MySQL kamu
-      database: 'cpwjk',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true, // jangan pakai di production
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: config.get<'mysql'>('DB_TYPE'),
+        host: config.get<string>('DB_HOST'),
+        port: config.get<number>('DB_PORT'),
+        username: config.get<string>('DB_USERNAME'),
+        password: config.get<string>('DB_PASSWORD'),
+        database: config.get<string>('DB_NAME'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true, // hati-hati di production
+      }),
     }),
     AuthModule,
     UserModule,
