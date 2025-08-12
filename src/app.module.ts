@@ -1,8 +1,5 @@
-import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './core/auth/auth.module';
-
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProfileModule } from './module/profile/profile.module';
 import { ArticleModule } from './module/article/article.module';
 import { CarierModule } from './module/carier/carier.module';
@@ -12,6 +9,8 @@ import { TagModule } from './module/tag/tag.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ChatbotModule } from './module/chatbot/chatbot.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module } from '@nestjs/common';
 
 @Module({
   imports: [

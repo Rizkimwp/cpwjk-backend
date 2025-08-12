@@ -1,13 +1,14 @@
-import crypto from 'crypto';
-(global as any).crypto = crypto;
-import { NestFactory } from '@nestjs/core';
+// akan pakai crypto.randomUUID kalau ada, kalau enggak pakai fallback
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { AllExceptionsFilter } from './filters/http-exception.filter';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+  crypto.randomUUID();
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: process.env.FRONTEND_URL, // asal frontend React kamu
