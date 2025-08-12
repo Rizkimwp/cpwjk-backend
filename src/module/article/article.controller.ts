@@ -8,6 +8,8 @@ import {
   UploadedFile,
   Query,
   UseGuards,
+  Delete,
+  Patch,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import {
@@ -73,6 +75,31 @@ export class ArticleController {
       thumbnail: thumbnail?.filename,
     });
   }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('user')
+  @Patch(':id')
+  @UseInterceptors(
+    FileInterceptor('thumbnail', {
+      storage: diskStorage({
+        destination: './uploads/articles/thumbnail',
+        filename: (req, file, cb) => {
+          const ext = extname(file.originalname);
+          const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
+  async update(
+    @Param('id') id: string,
+    @UploadedFile() thumbnail: Express.Multer.File,
+    @Body() body: CreateArticleDto, // atau UpdateArticleDto
+  ) {
+    return this.articleService.update(id, {
+      ...body,
+      thumbnail: thumbnail?.filename, // kirim filename baru kalau ada
+    });
+  }
 
   @Get()
   @ApiResponse({ status: 200, description: 'List Atikel' })
@@ -96,5 +123,10 @@ export class ArticleController {
   @Get(':slug')
   findOne(@Param('slug') slug: string) {
     return this.articleService.findOne(slug);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<{ message: string }> {
+    return this.articleService.remove(id);
   }
 }

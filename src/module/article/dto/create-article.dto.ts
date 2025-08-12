@@ -18,8 +18,8 @@ export class CreateArticleDto {
   slug: string;
 
   @ApiProperty()
+  @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()
-  @Transform(({ value }) => value === 'true')
   isPublished: boolean;
 
   @ApiProperty()
@@ -46,6 +46,9 @@ export class CreateArticleDto {
 }
 
 export class ResponseArticleDto {
+  @ApiProperty()
+  id: string;
+
   @ApiProperty()
   title: string;
 
