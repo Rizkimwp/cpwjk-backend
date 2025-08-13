@@ -32,7 +32,7 @@ import { Module } from '@nestjs/common';
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // hati-hati di production
+        synchronize: false, // hati-hati di production
       }),
     }),
     AuthModule,
