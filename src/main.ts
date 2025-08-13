@@ -11,7 +11,7 @@ async function bootstrap() {
   crypto.randomUUID();
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ['http://localhost:5173', 'https://wjkcikande.com'], // asal frontend React kamu
+      origin: true,
       credentials: true,
     },
   });
