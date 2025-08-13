@@ -11,4 +11,8 @@ export const FAQ_DATA = [
     q: 'kontak',
     a: 'Hubungi kami di email: admin@wjkcikande.com atau telp: (0254) 403333.',
   },
+  {
+    q: 'produk',
+    a: 'Produk kami meliputi: pakan ikan, pakan ayam, pakan unggas, dan pakan kucing. Semua produk berkualitas tinggi dan diformulasikan untuk memenuhi kebutuhan nutrisi hewan Anda.',
+  },
 ];
