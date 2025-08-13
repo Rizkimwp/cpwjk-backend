@@ -16,18 +16,24 @@ async function bootstrap() {
     },
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  const config = new DocumentBuilder()
-    .setTitle('User API')
-    .setDescription('API untuk mengelola user')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-  });
+
+  if (process.env.ENABLE_SWAGGER === 'true') {
+    const config = new DocumentBuilder()
+      .setTitle('User API')
+      .setDescription('API untuk mengelola user')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+
+    SwaggerModule.setup('api', app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    });
+  }
+
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(process.env.PORT ?? 3050);
