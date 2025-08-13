@@ -7,17 +7,14 @@ export class ChatbotService {
   answer(data: ChatbotDto): string {
     const lowerQuestion = data.question.toLowerCase();
 
-    // Gabungkan semua keyword jadi array string
     const allKeywords: string[] = FAQ_DATA.flatMap((item: FaqItem) =>
       item.q.map((q) => q.toLowerCase()),
     );
 
-    // Cari keyword yang paling mirip
     const match = stringSimilarity.findBestMatch(lowerQuestion, allKeywords);
     const bestMatchRating = match.bestMatch.rating;
     const bestMatchKeyword = match.bestMatch.target;
 
-    // Temukan item FAQ yang punya keyword tersebut
     const matchedItem = FAQ_DATA.find((item) =>
       item.q.some((q) => q.toLowerCase() === bestMatchKeyword),
     );
@@ -26,6 +23,8 @@ export class ChatbotService {
       return matchedItem.a;
     }
 
-    return 'Maaf, saya belum punya jawaban untuk pertanyaan itu.';
+    // Jawaban default kalau tidak ditemukan
+    return `Maaf, saya belum punya jawaban pasti untuk pertanyaan: "${data.question}". 
+Namun saya akan mencatatnya untuk referensi ke depan.`;
   }
 }
