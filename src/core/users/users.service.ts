@@ -60,7 +60,7 @@ export class UserService {
   async findByUsername(username: string): Promise<User> {
     const find = await this.userRepository.findOne({ where: { username } });
     if (!find) {
-      throw new NotFoundException();
+      throw new NotFoundException('User tidak terdaftar');
     }
     return plainToInstance(User, {
       id: find.id,

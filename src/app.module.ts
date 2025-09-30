@@ -11,6 +11,7 @@ import { join } from 'path';
 import { ChatbotModule } from './module/chatbot/chatbot.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
+import { ProductModule } from './module/product/product.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { Module } from '@nestjs/common';
     ContactModule,
     TagModule,
     ChatbotModule,
+    ProductModule,
   ],
 })
 export class AppModule {}

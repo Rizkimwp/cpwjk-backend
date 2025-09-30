@@ -19,8 +19,14 @@ export class Carier {
   @Column({ type: 'text' })
   description: string;
 
-  @Column()
+  @Column({ type: 'text' })
   requirements: string;
+
+  @Column()
+  contact: string;
+
+  @Column({ default: false })
+  isPublished: boolean;
 
   @Column({ type: 'date' })
   deadline: Date;
