@@ -12,6 +12,10 @@ import { ChatbotModule } from './module/chatbot/chatbot.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { ProductModule } from './module/product/product.module';
+import { ProductIngredientModule } from './module/product_ingredient/product_ingredient.module';
+import { ProductNutrientsModule } from './module/product_nutrients/product_nutrients.module';
+import { NutrientMasterModule } from './module/nutrient_master/nutrient_master.module';
+import { IngredientMasterModule } from './module/ingredient_master/ingredient_master.module';
 
 @Module({
   imports: [
@@ -45,6 +49,10 @@ import { ProductModule } from './module/product/product.module';
     TagModule,
     ChatbotModule,
     ProductModule,
+    ProductIngredientModule,
+    ProductNutrientsModule,
+    NutrientMasterModule,
+    IngredientMasterModule,
   ],
 })
 export class AppModule {}

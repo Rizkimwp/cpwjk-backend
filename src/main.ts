@@ -15,7 +15,13 @@ async function bootstrap() {
       credentials: true,
     },
   });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   if (process.env.ENABLE_SWAGGER === 'true') {
     const config = new DocumentBuilder()

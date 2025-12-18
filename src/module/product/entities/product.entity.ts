@@ -1,41 +1,61 @@
-import { Column, Entity,  PrimaryGeneratedColumn } from 'typeorm';
+import { ProductIngredient } from 'src/module/product_ingredient/entities/product_ingredient.entity';
+import { ProductNutrient } from 'src/module/product_nutrients/entities/product_nutrient.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 255 })
-  namaProduk: string;
+  @Column()
+  name: string; // Contoh: “SATRIA MAS Pakan Ikan Mas Tenggelam SMW”
 
-  @Column({ length: 50, nullable: true })
-  tipe: string; // Tenggelam / Apung
+  @Column({ nullable: true })
+  kategori: string; // Tenggelam / Terapung
 
-  @Column({ length: 50, nullable: true })
-  kode: string; // SMW
+  @Column({ nullable: true })
+  image: string;
 
-  @Column('text', { nullable: true })
-  caraPenggunaan: string;
+  @Column({ nullable: true })
+  productionCode: string; // 07016
 
-  @Column('text', { nullable: true })
-  caraPenyimpanan: string;
+  @Column({ nullable: true })
+  npp: string; // KKP RI IM 057042018
 
-  @Column('int', { nullable: true })
-  beratBersih: number;
+  @Column({ type: 'integer', default: 0 })
+  netWeightKg: number; // 50 KG
 
-  @Column({ length: 100, nullable: true })
-  npp: string;
+  @Column({ nullable: true })
+  usage: string; // Cara penggunaan
 
-  @Column({ length: 50, nullable: true })
-  kodeProduksi: string;
+  @Column({ nullable: true })
+  storage: string; // Cara penyimpanan
 
-  // // Relasi
-  // @OneToMany(() => BahanBaku, (bahanBaku) => bahanBaku.feed, { cascade: true })
-  // bahanBaku: BahanBaku[];
+  // Relasi ke nutrisi
+  @OneToMany(() => ProductNutrient, (n) => n.product, { cascade: true })
+  productNutrients: ProductNutrient[];
 
-  // @OneToMany(() => FeedImage, (image) => image.feed, { cascade: true })
-  // images: FeedImage[];
+  @OneToMany(() => ProductIngredient, (i) => i.product, { cascade: true })
+  productIngredients: ProductIngredient[];
 
-  // @OneToMany(() => FeedAnalisa, (analisa) => analisa.feed, { cascade: true })
-  // analisa: FeedAnalisa[];
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
 }
