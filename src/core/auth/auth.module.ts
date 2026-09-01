@@ -16,7 +16,7 @@ import { UserModule } from '../users/users.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const secret = config.get<string>('JWT_SECRET');
-        console.log('SECRET DI JWT MODULE:', secret);
+
         return {
           secret,
           signOptions: { expiresIn: '1d' },

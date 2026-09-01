@@ -16,6 +16,7 @@ import { ProductIngredientModule } from './module/product_ingredient/product_ing
 import { ProductNutrientsModule } from './module/product_nutrients/product_nutrients.module';
 import { NutrientMasterModule } from './module/nutrient_master/nutrient_master.module';
 import { IngredientMasterModule } from './module/ingredient_master/ingredient_master.module';
+import { ComplaintModule } from './module/complaint/complaint.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { IngredientMasterModule } from './module/ingredient_master/ingredient_ma
     ProductNutrientsModule,
     NutrientMasterModule,
     IngredientMasterModule,
+    ComplaintModule,
   ],
 })
 export class AppModule {}
