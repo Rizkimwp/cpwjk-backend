@@ -35,8 +35,6 @@ export class ComplaintController {
   // CREATE / UPDATE
   // =========================================================
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('user')
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -103,7 +101,8 @@ export class ComplaintController {
   // =========================================================
   // FIND ALL
   // =========================================================
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('user')
   @Get()
   @ApiResponse({
     status: 200,
@@ -125,7 +124,8 @@ export class ComplaintController {
   // =========================================================
   // FIND ONE
   // =========================================================
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('user')
   @Get(':id')
   @ApiParam({
     name: 'id',
