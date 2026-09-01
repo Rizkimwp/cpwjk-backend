@@ -26,6 +26,9 @@ export class ComplaintService {
     try {
       const { id, ...rest } = dto;
 
+      // =========================
+      // UPDATE
+      // =========================
       if (id) {
         const existingComplaint = await this.complaintRepo.findOne({
           where: { id },
@@ -40,8 +43,6 @@ export class ComplaintService {
         const updatedComplaint = this.complaintRepo.merge(existingComplaint, {
           ...rest,
 
-          tanggal_kejadian: new Date(rest.tanggal_kejadian),
-
           foto_video: rest.foto_video ?? existingComplaint.foto_video,
 
           dokumen: rest.dokumen ?? existingComplaint.dokumen,
@@ -50,10 +51,11 @@ export class ComplaintService {
         return await this.complaintRepo.save(updatedComplaint);
       }
 
+      // =========================
+      // CREATE
+      // =========================
       const newComplaint = this.complaintRepo.create({
         ...rest,
-
-        tanggal_kejadian: new Date(rest.tanggal_kejadian),
 
         foto_video: rest.foto_video ?? [],
 
@@ -85,6 +87,7 @@ export class ComplaintService {
     try {
       const {
         sortBy = 'DESC',
+        tipe_laporan,
         search,
         kategori,
         status,
@@ -131,6 +134,11 @@ export class ComplaintService {
         });
       }
 
+      if (tipe_laporan) {
+        qb.andWhere('complaint.tipe_laporan = :tipe_laporan', {
+          tipe_laporan,
+        });
+      }
       // =========================
       // SORT
       // =========================

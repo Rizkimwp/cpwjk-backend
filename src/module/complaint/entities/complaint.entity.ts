@@ -17,9 +17,9 @@ export class Complaint {
 
   @Column({
     type: 'varchar',
-    length: 255,
+    length: 20,
   })
-  judul: string;
+  tipe_laporan: 'pengaduan' | 'saran';
 
   @Column({
     type: 'varchar',
@@ -31,15 +31,6 @@ export class Complaint {
     type: 'text',
   })
   isi_laporan: string;
-
-  // =========================
-  // WAKTU KEJADIAN
-  // =========================
-
-  @Column({
-    type: 'datetime',
-  })
-  tanggal_kejadian: Date;
 
   // =========================
   // BUKTI PENDUKUNG
@@ -77,16 +68,8 @@ export class Complaint {
   @Column({
     type: 'varchar',
     length: 20,
-    nullable: true,
   })
-  no_whatsapp: string | null;
-
-  @Column({
-    type: 'varchar',
-    length: 150,
-    nullable: true,
-  })
-  email: string | null;
+  no_whatsapp: string;
 
   @Column({
     type: 'boolean',

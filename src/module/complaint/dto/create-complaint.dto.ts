@@ -2,8 +2,7 @@ import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
-  IsDateString,
-  IsEmail,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -22,8 +21,8 @@ export class CreateComplaintDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(255)
-  judul: string;
+  @IsIn(['pengaduan', 'saran'])
+  tipe_laporan: 'pengaduan' | 'saran';
 
   @IsString()
   @IsNotEmpty()
@@ -35,21 +34,17 @@ export class CreateComplaintDto {
   isi_laporan: string;
 
   // =========================
-  // WAKTU KEJADIAN
-  // =========================
-
-  @IsDateString()
-  tanggal_kejadian: string;
-
-  // =========================
   // BUKTI PENDUKUNG
   // =========================
+
   @IsOptional()
   @IsArray()
+  @IsString({ each: true })
   foto_video?: string[];
 
   @IsOptional()
   @IsArray()
+  @IsString({ each: true })
   dokumen?: string[];
 
   // =========================
@@ -67,20 +62,15 @@ export class CreateComplaintDto {
   @Length(16, 16)
   nik?: string | null;
 
-  @IsOptional()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(20)
   no_whatsapp: string;
-
-  @IsOptional()
-  @Transform(({ value }) => (value === '' ? null : value))
-  @IsEmail()
-  @MaxLength(150)
-  email?: string | null;
 
   // =========================
   // ANONYMOUS
   // =========================
+
   @IsOptional()
   @Transform(({ value }) => {
     if (value === 'true') return true;

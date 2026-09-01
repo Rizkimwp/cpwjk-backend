@@ -8,6 +8,10 @@ export class ComplaintFilterDto {
 
   @IsOptional()
   @IsString()
+  tipe_laporan?: string;
+
+  @IsOptional()
+  @IsString()
   kategori?: string;
 
   @IsOptional()
