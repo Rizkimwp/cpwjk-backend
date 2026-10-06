@@ -1,22 +1,28 @@
 import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+
 import { Type } from 'class-transformer';
 
 export class ComplaintFilterDto {
+  // =========================
+  // SEARCH
+  // =========================
+
   @IsOptional()
   @IsString()
   search?: string;
 
-  @IsOptional()
-  @IsString()
-  tipe_laporan?: string;
+  // =========================
+  // FILTER TIPE PELAPOR
+  // =========================
 
   @IsOptional()
   @IsString()
-  kategori?: string;
+  @IsIn(['internal', 'eksternal'])
+  tipe_pelapor?: 'internal' | 'eksternal';
 
-  @IsOptional()
-  @IsString()
-  status?: string;
+  // =========================
+  // PAGINATION
+  // =========================
 
   @IsOptional()
   @Type(() => Number)
@@ -30,6 +36,10 @@ export class ComplaintFilterDto {
   @Min(1)
   @Max(100)
   limit?: number = 10;
+
+  // =========================
+  // SORT
+  // =========================
 
   @IsOptional()
   @IsIn(['ASC', 'DESC'])

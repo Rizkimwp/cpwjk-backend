@@ -19,61 +19,21 @@ export class ComplaintService {
   ) {}
 
   // =========================================================
-  // CREATE / UPDATE
+  // CREATE
   // =========================================================
 
-  async createOrUpdate(dto: CreateComplaintDto): Promise<Complaint> {
+  async create(dto: CreateComplaintDto): Promise<Complaint> {
     try {
-      const { id, ...rest } = dto;
-
-      // =========================
-      // UPDATE
-      // =========================
-      if (id) {
-        const existingComplaint = await this.complaintRepo.findOne({
-          where: { id },
-        });
-
-        if (!existingComplaint) {
-          throw new NotFoundException(
-            `Pengaduan dengan id ${id} tidak ditemukan`,
-          );
-        }
-
-        const updatedComplaint = this.complaintRepo.merge(existingComplaint, {
-          ...rest,
-
-          foto_video: rest.foto_video ?? existingComplaint.foto_video,
-
-          dokumen: rest.dokumen ?? existingComplaint.dokumen,
-        });
-
-        return await this.complaintRepo.save(updatedComplaint);
-      }
-
-      // =========================
-      // CREATE
-      // =========================
-      const newComplaint = this.complaintRepo.create({
-        ...rest,
-
-        foto_video: rest.foto_video ?? [],
-
-        dokumen: rest.dokumen ?? [],
-
-        status: 'submitted',
+      const complaint = this.complaintRepo.create({
+        saran: dto.saran ?? null,
+        kritik: dto.kritik ?? null,
+        tipe_pelapor: dto.tipe_pelapor,
+        nama_pelapor: dto.nama_pelapor,
       });
 
-      return await this.complaintRepo.save(newComplaint);
+      return await this.complaintRepo.save(complaint);
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-
-      throw new InternalServerErrorException(
-        'Failed to create or update complaint',
-        error,
-      );
+      throw new InternalServerErrorException('Gagal membuat saran dan kritik');
     }
   }
 
@@ -87,10 +47,8 @@ export class ComplaintService {
     try {
       const {
         sortBy = 'DESC',
-        tipe_laporan,
         search,
-        kategori,
-        status,
+        tipe_pelapor,
         page = 1,
         limit = 10,
       } = query;
@@ -104,8 +62,8 @@ export class ComplaintService {
       if (search) {
         qb.andWhere(
           `(
-            LOWER(complaint.judul) LIKE :search
-            OR LOWER(complaint.isi_laporan) LIKE :search
+            LOWER(complaint.saran) LIKE :search
+            OR LOWER(complaint.kritik) LIKE :search
             OR LOWER(complaint.nama_pelapor) LIKE :search
           )`,
           {
@@ -115,30 +73,15 @@ export class ComplaintService {
       }
 
       // =========================
-      // FILTER KATEGORI
+      // FILTER TIPE PELAPOR
       // =========================
 
-      if (kategori) {
-        qb.andWhere('complaint.kategori = :kategori', {
-          kategori,
+      if (tipe_pelapor) {
+        qb.andWhere('complaint.tipe_pelapor = :tipe_pelapor', {
+          tipe_pelapor,
         });
       }
 
-      // =========================
-      // FILTER STATUS
-      // =========================
-
-      if (status) {
-        qb.andWhere('complaint.status = :status', {
-          status,
-        });
-      }
-
-      if (tipe_laporan) {
-        qb.andWhere('complaint.tipe_laporan = :tipe_laporan', {
-          tipe_laporan,
-        });
-      }
       // =========================
       // SORT
       // =========================
@@ -160,8 +103,7 @@ export class ComplaintService {
       };
     } catch (error) {
       throw new InternalServerErrorException(
-        'Failed to load complaint list',
-        error,
+        'Gagal mengambil daftar saran dan kritik',
       );
     }
   }
@@ -171,33 +113,54 @@ export class ComplaintService {
   // =========================================================
 
   async findOne(id: string): Promise<Complaint> {
-    const complaint = await this.complaintRepo.findOne({
-      where: { id },
-    });
+    try {
+      const complaint = await this.complaintRepo.findOne({
+        where: { id },
+      });
 
-    if (!complaint) {
-      throw new NotFoundException(`Complaint dengan id ${id} tidak ditemukan`);
+      if (!complaint) {
+        throw new NotFoundException(
+          `Saran/kritik dengan id ${id} tidak ditemukan`,
+        );
+      }
+
+      return complaint;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'Gagal mengambil data saran dan kritik',
+      );
     }
-
-    return complaint;
   }
 
   // =========================================================
-  // UPDATE STATUS
+  // UPDATE
   // =========================================================
 
-  async updateStatus(id: string, dto: { status: string }): Promise<Complaint> {
-    const complaint = await this.complaintRepo.findOne({
-      where: { id },
-    });
+  async update(id: string, dto: CreateComplaintDto): Promise<Complaint> {
+    try {
+      const complaint = await this.findOne(id);
 
-    if (!complaint) {
-      throw new NotFoundException(`Complaint dengan id ${id} tidak ditemukan`);
+      this.complaintRepo.merge(complaint, {
+        saran: dto.saran ?? null,
+        kritik: dto.kritik ?? null,
+        tipe_pelapor: dto.tipe_pelapor,
+        nama_pelapor: dto.nama_pelapor,
+      });
+
+      return await this.complaintRepo.save(complaint);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'Gagal mengubah data saran dan kritik',
+      );
     }
-
-    complaint.status = dto.status;
-
-    return await this.complaintRepo.save(complaint);
   }
 
   // =========================================================
@@ -205,14 +168,18 @@ export class ComplaintService {
   // =========================================================
 
   async remove(id: string): Promise<void> {
-    const complaint = await this.complaintRepo.findOne({
-      where: { id },
-    });
+    try {
+      const complaint = await this.findOne(id);
 
-    if (!complaint) {
-      throw new NotFoundException(`Complaint dengan id ${id} tidak ditemukan`);
+      await this.complaintRepo.remove(complaint);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'Gagal menghapus saran dan kritik',
+      );
     }
-
-    await this.complaintRepo.remove(complaint);
   }
 }

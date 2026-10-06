@@ -1,51 +1,19 @@
-import { Transform } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsIn,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Length,
-  MaxLength,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateComplaintDto {
-  @IsOptional()
-  @IsString()
-  id?: string;
-
   // =========================
-  // DATA UTAMA
-  // =========================
-
-  @IsString()
-  @IsNotEmpty()
-  @IsIn(['pengaduan', 'saran'])
-  tipe_laporan: 'pengaduan' | 'saran';
-
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
-  kategori: string;
-
-  @IsString()
-  @IsNotEmpty()
-  isi_laporan: string;
-
-  // =========================
-  // BUKTI PENDUKUNG
+  // SARAN & KRITIK
   // =========================
 
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  foto_video?: string[];
+  @IsString()
+  @MaxLength(5000)
+  saran?: string;
 
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  dokumen?: string[];
+  @IsString()
+  @MaxLength(5000)
+  kritik?: string;
 
   // =========================
   // DATA PELAPOR
@@ -53,31 +21,10 @@ export class CreateComplaintDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(150)
-  nama_pelapor: string;
-
-  @IsOptional()
-  @Transform(({ value }) => (value === '' ? null : value))
-  @IsString()
-  @Length(16, 16)
-  nik?: string | null;
+  tipe_pelapor: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(20)
-  no_whatsapp: string;
-
-  // =========================
-  // ANONYMOUS
-  // =========================
-
-  @IsOptional()
-  @Transform(({ value }) => {
-    if (value === 'true') return true;
-    if (value === 'false') return false;
-
-    return value;
-  })
-  @IsBoolean()
-  anonymous?: boolean;
+  @MaxLength(150)
+  nama_pelapor: string;
 }
